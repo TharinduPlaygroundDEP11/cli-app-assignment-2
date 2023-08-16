@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class SmartBankingApp {
@@ -24,7 +25,6 @@ public class SmartBankingApp {
 
         String screen = DASHBOARD;
 
-        mainLoop:
         do {
 
             final String APP_TITLE = String.format("%s", screen);
@@ -53,8 +53,70 @@ public class SmartBankingApp {
                     }
                     break;
 
+                    case OPEN_ACCOUNT:
+                    int number = (int) (Math.random() * Math.pow(3, 10));
+                    String formattedNumber = String.format("SDB-%05d", number);
+                    System.out.printf("\tNew Account Number : %s \n", formattedNumber);
 
+                    boolean valid;
+                    String name;
+                    double amount = 0;
+                    do{
+                        do{
+                        valid = true;
+                            System.out.print("\n\tEnter Account Holder's Name : ");
+                            name = SCANNER.nextLine().strip();
+                            if (name.isBlank()){
+                                System.out.printf(ERROR_MSG, "Name can't be empty");
+                                valid = false;
+                                continue;
+                            }
+                            for (int i = 0; i < name.length(); i++) {
+                                if (!(Character.isLetter(name.charAt(i)) || 
+                                    Character.isSpaceChar(name.charAt(i))) ) {
+                                    System.out.printf(ERROR_MSG, "Invalid Name");
+                                    valid = false;
+                                    break;
+                                }
+                            }
+                        } while (!valid);
+
+                        do {
+                            valid = true;
+                            System.out.print("\n\tEnter Initial Deposit Amount : Rs.");
+                            amount = SCANNER.nextDouble();
+                            SCANNER.nextLine();
+                        
+                            if (amount < 5000) {
+                                System.out.printf(ERROR_MSG, "Insufficient Initial Amount");
+                                valid = false;
+                                continue;
+                            }
+                        } while (!valid);
+
+                    }while(!valid);
+                    String[][] newBankAccount = new String[bankAccounts.length + 1][3];
                     
+                    for (int i = 0; i < bankAccounts.length; i++) {
+                        newBankAccount[i] = bankAccounts[i];
+                    }
+
+                    newBankAccount[newBankAccount.length-1][0] = formattedNumber;
+                    newBankAccount[newBankAccount.length-1][1] = name;
+                    newBankAccount[newBankAccount.length-1][2] = Double.toString(amount);
+                    
+                    bankAccounts = newBankAccount;
+                    
+                    System.out.printf(SUCCESS_MSG, String.format("\n\t%s : %s Added Successfully!", formattedNumber, name));
+
+                    // for (int i = 0; i < bankAccounts.length; i++) {
+                    //     System.out.println(Arrays.toString(bankAccounts[i]));
+                    // }
+
+                    System.out.print("\nDo you want to go back? (Y/n) : ");
+                    if(SCANNER.nextLine().strip().toUpperCase().equals("Y")) screen = DASHBOARD;
+                    break;
+
 
                 default: continue;
             }
